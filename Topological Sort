@@ -1,0 +1,43 @@
+import java.util.*;
+
+public class Q3 {
+    static class Graph {
+        Map<Character, List<Character>> adj = new HashMap<>();
+        void addEdge(char u, char v) {
+            adj.computeIfAbsent(u, k -> new ArrayList<>()).add(v);
+            adj.putIfAbsent(v, new ArrayList<>());
+        }
+        void topoSort() {
+            Deque<Character> stack = new ArrayDeque<>();
+            Set<Character> visited = new HashSet<>();
+            List<Character> sortedKeys = new ArrayList<>(adj.keySet());
+            Collections.sort(sortedKeys);
+
+            for (char node : sortedKeys) {
+                if (!visited.contains(node)) dfs(node, visited, stack);
+            }
+
+            while (!stack.isEmpty()) System.out.print(stack.pop() + " ");
+        }
+        void dfs(char u, Set<Character> visited, Deque<Character> stack) {
+            visited.add(u);
+            for (char v : adj.getOrDefault(u, new ArrayList<>())) {
+                if (!visited.contains(v)) dfs(v, visited, stack);
+            }
+            stack.push(u);
+        }
+    }
+    public static void main(String[] args) {
+        Graph g = new Graph();
+        g.addEdge('m', 'q'); g.addEdge('m', 'r'); g.addEdge('m', 'x');
+        g.addEdge('n', 'q'); g.addEdge('n', 'u'); g.addEdge('n', 'o');
+        g.addEdge('p', 'o'); g.addEdge('p', 's'); g.addEdge('p', 'z');
+        g.addEdge('o', 'r'); g.addEdge('o', 'v');
+        g.addEdge('q', 't'); g.addEdge('r', 'u'); g.addEdge('r', 'y');
+        g.addEdge('s', 'r'); g.addEdge('s', 'v');
+        g.addEdge('u', 't'); g.addEdge('v', 'w'); g.addEdge('v', 'x');
+        g.addEdge('y', 'v'); g.addEdge('w', 'z');
+        System.out.print("Topological Sort Order: ");
+        g.topoSort();
+    }
+}
